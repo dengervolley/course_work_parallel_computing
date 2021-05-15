@@ -1,9 +1,10 @@
-package com.coursework.webapi.persistance;
+package com.coursework.api.persistence;
 
-import com.coursework.indices.InverseIndex;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ServerFileSaver implements IFileSaver {
     private final String basePath = "src/files";

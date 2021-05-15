@@ -1,10 +1,10 @@
-package com.coursework.webapi;
+package com.coursework.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WebapiApplicationTests {
+class ApiApplicationTests {
 
     @Test
     void contextLoads() {

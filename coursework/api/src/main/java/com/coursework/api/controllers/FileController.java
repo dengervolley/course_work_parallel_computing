@@ -1,8 +1,8 @@
-package com.coursework.webapi.controllers;
+package com.coursework.api.controllers;
 
+import com.coursework.api.persistence.IFileSaver;
 import com.coursework.indices.InverseIndex;
 import com.coursework.loggers.ILogger;
-import com.coursework.webapi.persistance.IFileSaver;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

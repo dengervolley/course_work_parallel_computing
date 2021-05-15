@@ -1,5 +1,8 @@
-package com.coursework.webapi.config;
+package com.coursework.api.config;
 
+
+import com.coursework.api.persistence.IFileSaver;
+import com.coursework.api.persistence.ServerFileSaver;
 import com.coursework.indices.InverseIndex;
 import com.coursework.loggers.ConsoleLogger;
 import com.coursework.loggers.ILogger;
@@ -9,8 +12,6 @@ import com.coursework.suppliers.FileTextSupplier;
 import com.coursework.suppliers.ITextSupplier;
 import com.coursework.tokenizers.ITokenizer;
 import com.coursework.tokenizers.TextTokenizer;
-import com.coursework.webapi.persistance.IFileSaver;
-import com.coursework.webapi.persistance.ServerFileSaver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -47,6 +48,6 @@ public class AppConfig {
 
     @Bean
     public IFileSaver getFileSaver() {
-        return new ServerFileSaver(index);
+        return new ServerFileSaver();
     }
 }

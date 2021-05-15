@@ -1,4 +1,4 @@
-package com.coursework.webapi.persistance;
+package com.coursework.api.persistence;
 
 import org.springframework.web.multipart.MultipartFile;
 
