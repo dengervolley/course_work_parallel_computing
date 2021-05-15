@@ -33,6 +33,18 @@
             <artifactId>spring-context</artifactId>
             <version>5.2.8.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>Denis/coursework</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>Denis/coursework</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

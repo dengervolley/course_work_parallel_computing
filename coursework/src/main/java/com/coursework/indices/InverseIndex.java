@@ -25,17 +25,32 @@ public class InverseIndex {
         return this.inverseIndex;
     }
 
-    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistanceProvider, boolean buildIndex, int threads, ILogger logger, String... files) {
+    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider, int numThreads, ILogger logger){
+        this(tokenizer, persistenceProvider, false, numThreads, logger);
+    }
+
+    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider, boolean buildIndex, int threads, ILogger logger, String... files) {
         this.tokenizer = tokenizer;
         this.files = new ArrayList<>(Arrays.asList(files));
         this.numThreads = threads;
         this.logger = logger;
         if (buildIndex)
             this.buildIndex();
-        persistenceProvider = persistanceProvider;
+        this.persistenceProvider = persistenceProvider;
+    }
+
+
+    public void addFilesToIndex(String ... fileNames){
+        this.files.addAll(Arrays.asList(fileNames));
+        var partialIndex = buildIndexImpl(Arrays.asList(fileNames));
+        this.inverseIndex.addAll(partialIndex);
     }
 
     public void buildIndex() {
+        this.inverseIndex = buildIndexImpl(this.files);
+    }
+
+    private List<IndexItem> buildIndexImpl(List<String> files){
         var tokens = Collections.synchronizedList(new ArrayList<List<Token>>(files.size()));
         var chunks = ArrayUtils.nChunks(files, numThreads);
         var executor = Executors.newFixedThreadPool(numThreads);
@@ -67,8 +82,7 @@ public class InverseIndex {
             }
             indexItems.add(indexItem);
         }
-
-        this.inverseIndex = indexItems;
+        return indexItems;
     }
 
 }
