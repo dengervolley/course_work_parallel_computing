@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IPersistenceProvider {
     void persistIndex(InverseIndex index);
+
     void setPath(String path);
+
     public List<IndexItem> readIndex(String path);
 }

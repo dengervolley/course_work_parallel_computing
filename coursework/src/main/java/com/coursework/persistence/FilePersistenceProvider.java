@@ -17,13 +17,13 @@ import java.util.List;
 public class FilePersistenceProvider implements IPersistenceProvider {
 
     private String filePath;
-    private ILogger logger;
+    private final ILogger logger;
 
-    public FilePersistenceProvider(ILogger logger){
+    public FilePersistenceProvider(ILogger logger) {
         this.logger = logger;
     }
 
-    public void setPath(String file){
+    public void setPath(String file) {
         this.filePath = file;
     }
 
@@ -31,6 +31,10 @@ public class FilePersistenceProvider implements IPersistenceProvider {
     public void persistIndex(InverseIndex index) {
         var json = index.toString();
         try {
+            var file = new File(filePath);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
             var writer = new BufferedWriter(new FileWriter(filePath));
             writer.write(json);
             writer.close();
@@ -39,10 +43,10 @@ public class FilePersistenceProvider implements IPersistenceProvider {
         }
     }
 
-    public List<IndexItem> readIndex(String path){
+    public List<IndexItem> readIndex(String path) {
         var mapper = new ObjectMapper();
         var file = new File(path);
-        if(!file.exists()){
+        if (!file.exists()) {
             return new ArrayList<>();
         }
         List<IndexItem> indexItems;
