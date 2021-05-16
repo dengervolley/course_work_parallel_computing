@@ -59,6 +59,10 @@ public class InverseIndex {
         }
     }
 
+    public IndexItem findByValue(String value){
+        return this.inverseIndex.stream().filter(x -> x.getValue().equals(value)).findAny().orElse(null);
+    }
+
     public void buildIndex() {
         this.inverseIndex = buildIndexImpl(this.files);
     }

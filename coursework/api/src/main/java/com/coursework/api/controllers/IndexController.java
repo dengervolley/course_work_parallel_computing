@@ -29,4 +29,9 @@ public class IndexController {
     @GetMapping("/")
     public List<IndexItem> getIndex(){ return this.index.getIndex(); }
 
+    @GetMapping("/{term}")
+    public IndexItem findTerm(String term){
+        return this.index.findByValue(term);
+    }
+
 }
