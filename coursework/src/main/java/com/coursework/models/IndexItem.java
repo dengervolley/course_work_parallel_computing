@@ -1,5 +1,6 @@
 package com.coursework.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -8,9 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexItem {
     private final String value;
+
     private final List<HashMap<String, List<Integer>>> entries;
+
+    public IndexItem(){
+        this(null);
+    }
+
     public IndexItem(String value) {
         this.value = value;
         this.entries = new ArrayList<>();
@@ -31,7 +39,6 @@ public class IndexItem {
         }
         return totalCount;
     }
-
 
 
     private <K, V> Integer entriesCount(Map<K, List<V>> map) {

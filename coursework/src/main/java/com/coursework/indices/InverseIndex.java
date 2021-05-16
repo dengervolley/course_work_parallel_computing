@@ -25,11 +25,12 @@ public class InverseIndex {
         return this.inverseIndex;
     }
 
-    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider, int numThreads, ILogger logger){
+    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider, int numThreads, ILogger logger) {
         this(tokenizer, persistenceProvider, false, numThreads, logger);
     }
 
-    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider, boolean buildIndex, int threads, ILogger logger, String... files) {
+    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider,
+                        boolean buildIndex, int threads, ILogger logger, String... files) {
         this.tokenizer = tokenizer;
         this.files = new ArrayList<>(Arrays.asList(files));
         this.numThreads = threads;
@@ -37,20 +38,41 @@ public class InverseIndex {
         if (buildIndex)
             this.buildIndex();
         this.persistenceProvider = persistenceProvider;
+        this.inverseIndex = new ArrayList<>();
     }
 
-
-    public void addFilesToIndex(String ... fileNames){
+    public void addFilesToIndex(String... fileNames) {
         this.files.addAll(Arrays.asList(fileNames));
         var partialIndex = buildIndexImpl(Arrays.asList(fileNames));
-        this.inverseIndex.addAll(partialIndex);
+        for(var item: partialIndex){
+            var existingItem = this.inverseIndex
+                    .stream()
+                    .filter(x -> x.getValue().equals(item.getValue()))
+                    .findAny()
+                    .orElse(null);
+            if(existingItem != null){
+                existingItem.getEntries().addAll(item.getEntries());
+            }
+            else{
+                this.inverseIndex.add(item);
+            }
+        }
     }
 
     public void buildIndex() {
         this.inverseIndex = buildIndexImpl(this.files);
     }
 
-    private List<IndexItem> buildIndexImpl(List<String> files){
+    public void getFromFile(String filePath){
+        this.inverseIndex = this.persistenceProvider.readIndex(filePath);
+    }
+
+    public void saveToFile(String filePath) {
+        this.persistenceProvider.setPath(filePath);
+        this.persistenceProvider.persistIndex(this);
+    }
+
+    private List<IndexItem> buildIndexImpl(List<String> files) {
         var tokens = Collections.synchronizedList(new ArrayList<List<Token>>(files.size()));
         var chunks = ArrayUtils.nChunks(files, numThreads);
         var executor = Executors.newFixedThreadPool(numThreads);
@@ -83,6 +105,10 @@ public class InverseIndex {
             indexItems.add(indexItem);
         }
         return indexItems;
+    }
+    @Override
+    public String toString(){
+        return this.inverseIndex.toString();
     }
 
 }

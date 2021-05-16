@@ -18,8 +18,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfig {
     private static final int NUM_THREADS = 4;
-    private static final InverseIndex index = new InverseIndex(getTokenizer(),
-            getPersistenceProvider(), NUM_THREADS, getLogger());
+    private static final String filePath = "index/inverse-index.json";
+    private static final InverseIndex index = new InverseIndex(getTokenizer(),getPersistenceProvider(),
+            NUM_THREADS, getLogger());
 
     @Bean
     public static ITokenizer getTokenizer() {
@@ -43,6 +44,7 @@ public class AppConfig {
 
     @Bean
     public InverseIndex getIndex() {
+        index.getFromFile(filePath);
         return index;
     }
 

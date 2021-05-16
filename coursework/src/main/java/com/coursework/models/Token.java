@@ -5,6 +5,11 @@ import java.util.*;
 public class Token {
     private final String value;
     private final HashMap<String, List<Integer>> matches;
+
+    public Token(){
+        this(null);
+    }
+
     public Token(String value) {
         this.value = value;
         this.matches = new HashMap<>();
