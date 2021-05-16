@@ -6,6 +6,7 @@ import com.coursework.models.IndexItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -40,11 +41,17 @@ public class FilePersistenceProvider implements IPersistenceProvider {
 
     public List<IndexItem> readIndex(String path){
         var mapper = new ObjectMapper();
-        List<IndexItem> indexItems = new ArrayList<>();
+        var file = new File(path);
+        if(!file.exists()){
+            return new ArrayList<>();
+        }
+        List<IndexItem> indexItems;
+
         try {
             indexItems = new ArrayList<>(Arrays.asList(mapper.readValue(Paths.get(path).toFile(), IndexItem[].class)));
         } catch (IOException e) {
             logger.logError(e);
+            return new ArrayList<>();
         }
         return indexItems;
     }
