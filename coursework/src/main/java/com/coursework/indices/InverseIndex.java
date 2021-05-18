@@ -15,13 +15,13 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class InverseIndex {
 
-    private List<IndexItem> inverseIndex;
+    private HashMap<String, IndexItem> inverseIndex;
     private final ITokenizer tokenizer;
     private final List<String> files;
     private final IPersistenceProvider persistenceProvider;
     private final int numThreads;
     private final ILogger logger;
-    public List<IndexItem> getIndex() {
+    public HashMap<String, IndexItem> getIndex() {
         return this.inverseIndex;
     }
 
@@ -38,7 +38,7 @@ public class InverseIndex {
         if (buildIndex)
             this.buildIndex();
         this.persistenceProvider = persistenceProvider;
-        this.inverseIndex = new ArrayList<>();
+        this.inverseIndex = new HashMap<>();
     }
 
     public void addFilesToIndex(String... fileNames) {
@@ -62,7 +62,7 @@ public class InverseIndex {
     }
 
     public IndexItem findByValue(String value){
-        return this.inverseIndex.stream().filter(x -> x.getValue().equals(value)).findAny().orElse(null);
+        return this.inverseIndex.get(value);
     }
 
     public void buildIndex() {
@@ -78,7 +78,7 @@ public class InverseIndex {
         this.persistenceProvider.persistIndex(this);
     }
 
-    private List<IndexItem> buildIndexImpl(List<String> files) {
+    private HashMap<String, IndexItem> buildIndexImpl(List<String> files) {
         var tokens = Collections.synchronizedList(new ArrayList<List<Token>>(files.size()));
         var chunks = ArrayUtils.nChunks(files, numThreads);
         var executor = Executors.newFixedThreadPool(numThreads);
@@ -99,7 +99,7 @@ public class InverseIndex {
             logger.logError(e);
         }
 
-        var indexItems = new ArrayList<IndexItem>();
+        var indexItems = new HashMap<String, IndexItem>();
         var flatTokens = tokens.stream().flatMap(List::stream).toList();
         var groupedTokens = flatTokens.stream().collect(groupingBy(Token::value));
 
@@ -108,7 +108,7 @@ public class InverseIndex {
             for (var occurrences : group.getValue()) {
                 indexItem.getEntries().add(occurrences.matches());
             }
-            indexItems.add(indexItem);
+            indexItems.put(indexItem.getValue(), indexItem);
         }
         return indexItems;
     }

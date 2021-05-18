@@ -4,6 +4,7 @@ import com.coursework.indices.InverseIndex;
 import com.coursework.models.IndexItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class StubPersistenceProvider implements IPersistenceProvider {
@@ -17,8 +18,8 @@ public class StubPersistenceProvider implements IPersistenceProvider {
     }
 
     @Override
-    public List<IndexItem> readIndex(String path) {
-        return new ArrayList<>();
+    public HashMap<String,IndexItem> readIndex(String path) {
+        return new HashMap<>();
     }
 
 }

@@ -67,10 +67,8 @@ class IndexTest_SingleFile {
     private static void checkAsserts(InverseIndex index, Map<String, Integer> testIndex) {
         var idx = index.getIndex();
         for (var pair : testIndex.entrySet()) {
-            assertTrue(idx.stream().anyMatch(x -> x.getValue().equals(pair.getKey())));
-            assertTrue(idx.stream()
-                    .filter(x -> x.getValue().equals(pair.getKey()))
-                    .anyMatch(x -> x.getTotalCount().equals(pair.getValue())));
+            assertTrue(idx.getOrDefault(pair.getKey(), null) != null);
+            assertTrue(idx.get(pair.getKey()).getTotalCount().equals(pair.getValue()));
         }
     }
 

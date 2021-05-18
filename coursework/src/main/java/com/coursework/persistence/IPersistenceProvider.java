@@ -3,6 +3,7 @@ package com.coursework.persistence;
 import com.coursework.indices.InverseIndex;
 import com.coursework.models.IndexItem;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface IPersistenceProvider {
@@ -10,5 +11,5 @@ public interface IPersistenceProvider {
 
     void setPath(String path);
 
-    public List<IndexItem> readIndex(String path);
+    public HashMap<String, IndexItem> readIndex(String path);
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("api/index")
@@ -27,7 +27,7 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public List<IndexItem> getIndex(){ return this.index.getIndex(); }
+    public HashMap<String, IndexItem> getIndex(){ return this.index.getIndex(); }
 
     @GetMapping("/{term}")
     public IndexItem findTerm(String term){
