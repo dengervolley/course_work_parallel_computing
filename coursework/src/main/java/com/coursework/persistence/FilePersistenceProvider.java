@@ -31,8 +31,10 @@ public class FilePersistenceProvider implements IPersistenceProvider {
 
     @Override
     public void persistIndex(InverseIndex index) {
-        var json = index.toString();
+        var mapper = new ObjectMapper();
+        var json = "";
         try {
+            json = mapper.writeValueAsString(index.getIndex());
             var file = new File(filePath);
             if (!file.exists()) {
                 file.createNewFile();
