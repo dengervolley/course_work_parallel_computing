@@ -26,7 +26,6 @@ public class FileController {
         try {
             var newFilePath = this.fileSaver.saveFile(file);
             inverseIndex.addFilesToIndex(newFilePath);
-            inverseIndex.saveToFile("index/inverse-index.json");
         } catch (IOException e) {
             logger.logError(e);
         }

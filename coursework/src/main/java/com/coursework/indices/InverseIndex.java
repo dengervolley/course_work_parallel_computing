@@ -43,6 +43,7 @@ public class InverseIndex {
 
     public void addFilesToIndex(String... fileNames) {
         this.files.addAll(Arrays.asList(fileNames));
+        /*
         var partialIndex = buildIndexImpl(Arrays.asList(fileNames));
         for(var item: partialIndex){
             var existingItem = this.inverseIndex
@@ -57,6 +58,7 @@ public class InverseIndex {
                 this.inverseIndex.add(item);
             }
         }
+        */
     }
 
     public IndexItem findByValue(String value){
