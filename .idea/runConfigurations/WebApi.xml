@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="WebApi" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="api" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.coursework.api.ApiApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
