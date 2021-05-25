@@ -7,10 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="coursework" />
-        <module name="api" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="api" target="16" />
+      <module name="index-benchmarks" target="16" />
+      <module name="sockets-client" target="16" />
+      <module name="sockets-server" target="16" />
       <module name="webapi" target="16" />
     </bytecodeTargetLevel>
   </component>

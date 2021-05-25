@@ -7,9 +7,13 @@ import com.coursework.persistence.IPersistenceProvider;
 import com.coursework.tokenizers.ITokenizer;
 import com.coursework.utils.ArrayUtils;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -17,28 +21,48 @@ public class InverseIndex {
 
     private HashMap<String, IndexItem> inverseIndex;
     private final ITokenizer tokenizer;
-    private final List<String> files;
+    private List<String> files;
     private final IPersistenceProvider persistenceProvider;
-    private final int numThreads;
+    private int numThreads;
+    private int numFiles;
     private final ILogger logger;
+
     public HashMap<String, IndexItem> getIndex() {
         return this.inverseIndex;
     }
 
-    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider, int numThreads, ILogger logger) {
-        this(tokenizer, persistenceProvider, false, numThreads, logger);
+    public void setNumThreads(int numThreads) {
+        this.numThreads = numThreads;
+    }
+
+    public void setNumFiles(int numFiles) {
+        this.numFiles = numFiles;
+    }
+
+    public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider, int numThreads, ILogger logger, String directory) {
+        this(tokenizer, persistenceProvider, false, numThreads, logger, directory);
+
     }
 
     public InverseIndex(ITokenizer tokenizer, IPersistenceProvider persistenceProvider,
-                        boolean buildIndex, int threads, ILogger logger, String... files) {
+                        boolean buildIndex, int threads, ILogger logger, String directory, String... files) {
         this.tokenizer = tokenizer;
-        this.files = new ArrayList<>(Arrays.asList(files));
         this.numThreads = threads;
         this.logger = logger;
         if (buildIndex)
             this.buildIndex();
         this.persistenceProvider = persistenceProvider;
         this.inverseIndex = new HashMap<>();
+        if(directory != null && directory != "") {
+            try{
+                this.files = Files.walk(Paths.get(directory)).filter(Files::isRegularFile).map(x -> x.toString()).toList();
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            this.files = new ArrayList<>(Arrays.asList(files));
+        }
     }
 
     public void addFilesToIndex(String... fileNames) {
@@ -61,7 +85,7 @@ public class InverseIndex {
         */
     }
 
-    public IndexItem findByValue(String value){
+    public IndexItem findByValue(String value) {
         return this.inverseIndex.get(value);
     }
 
@@ -69,7 +93,7 @@ public class InverseIndex {
         this.inverseIndex = buildIndexImpl(this.files);
     }
 
-    public void getFromFile(String filePath){
+    public void getFromFile(String filePath) {
         this.inverseIndex = this.persistenceProvider.readIndex(filePath);
     }
 
@@ -83,12 +107,21 @@ public class InverseIndex {
         var chunks = ArrayUtils.nChunks(files, numThreads);
         var executor = Executors.newFixedThreadPool(numThreads);
         var latch = new CountDownLatch(chunks.size());
+        AtomicInteger filesCount = new AtomicInteger();
 
         for (var chunk : chunks) {
             executor.submit(() -> {
                 for (var file : chunk) {
+                    var tokenizedFilesCount = filesCount.get();
+                    if (tokenizedFilesCount >= this.numFiles)
+                        break;
                     var tokenizedFile = tokenizer.tokenize(file);
                     tokens.add(tokenizedFile);
+                    int oldValue, newValue;
+                    do {
+                        oldValue = filesCount.get();
+                        newValue = oldValue + 1;
+                    } while (!filesCount.compareAndSet(oldValue, newValue));
                 }
                 latch.countDown();
             });
@@ -112,8 +145,9 @@ public class InverseIndex {
         }
         return indexItems;
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return this.inverseIndex.toString();
     }
 

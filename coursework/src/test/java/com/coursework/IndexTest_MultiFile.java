@@ -37,6 +37,7 @@ public class IndexTest_MultiFile {
                 new StubPersistenceProvider(),
                 false, 1,
                 new ConsoleLogger(),
+                null,
                 testFiles
         );
 
