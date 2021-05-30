@@ -113,7 +113,7 @@ public class InverseIndex {
             executor.submit(() -> {
                 for (var file : chunk) {
                     var tokenizedFilesCount = filesCount.get();
-                    if (tokenizedFilesCount >= this.numFiles)
+                    if (tokenizedFilesCount > this.numFiles && this.numFiles != 0)
                         break;
                     var tokenizedFile = tokenizer.tokenize(file);
                     tokens.add(tokenizedFile);

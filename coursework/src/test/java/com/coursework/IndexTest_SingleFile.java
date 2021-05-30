@@ -39,6 +39,7 @@ class IndexTest_SingleFile {
                 new StubPersistenceProvider(),
                 false, 1,
                 new ConsoleLogger(),
+                null,
                 testFilePath
         );
 
